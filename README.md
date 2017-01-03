@@ -3,6 +3,8 @@ Chen-Hsuan Lin and Simon Lucey
 
 arXiv preprint: https://arxiv.org/abs/1612.03897
 
+<p align="center"><img src="https://www.andrew.cmu.edu/user/chenhsul/images/ICSTN2.png" width=600 height=250></p>
+
 We provide the Python/TensorFlow code for the perturbed MNIST classification experiments.  
 If you find our code useful for your research, please cite
 ```
@@ -17,7 +19,7 @@ If you find our code useful for your research, please cite
 --------------------------------------
 
 ### Prerequisites  
-You would need to have TensorFlow (r0.10+) installed. Please refer to the TensorFlow documentation (https://www.tensorflow.org/) for instructions on installation/configuration.
+You would need to have SciPy and TensorFlow (r0.10+) installed. Please refer to the TensorFlow documentation (https://www.tensorflow.org/) for instructions on installation/configuration.
 
 ### Running the code  
 The code is compatible with both Python2.7 (`python`) and Python3 (`python3`).  
