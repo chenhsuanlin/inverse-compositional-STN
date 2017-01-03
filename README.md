@@ -17,7 +17,7 @@ If you find our code useful for your research, please cite
 --------------------------------------
 
 ### Prerequisites  
-You would need to TensorFlow (r0.10+) installed. Please refer to https://www.tensorflow.org/get_started/os_setup for detailed instructions.
+You would need to have TensorFlow (r0.10+) installed. Please refer to the TensorFlow documentation (https://www.tensorflow.org/) for instructions on installation/configuration.
 
 ### Running the code  
 The code is compatible with both Python2.7 (`python`) and Python3 (`python3`).  
@@ -30,8 +30,9 @@ python train.py <TYPE> [--group GROUP] [--model MODEL] [--recurN RECURN] [--lr L
 2. `STN` - Spatial Transformer Network (STN)  
 3. `cSTN` - compositional Spatial Transformer Network (c-STN)  
 4. `ICSTN` - Inverse Compositional Spatial Transformer Network (IC-STN)  
-Explanations for the optional arguments can be found by executing `python train.py --help`.  
-If no optional arguments are given, the default settings are the same as described in the paper.  
+
+The list of optional arguments can be found by executing `python train.py --help`.  
+If no optional arguments are given, the default settings are set to be the same as described in the paper.  
 
 When the code is run for the first time, the MNIST dataset will be automatically downloaded and preprocessed.  
 The models (checkpoints) are saved in the automatically created directory `model_GROUP`; TensorFlow summaries are saved in `summary_GROUP`.
