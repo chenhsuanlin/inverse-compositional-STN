@@ -5,7 +5,7 @@ import time
 import data,warp
 from graph import createVariable,makeImageSummary
 
-# build Spatial Transformer
+# build Spatial Transformer (depth=4)
 def ST_depth4_CCFF(ImWarp,p,STlayerN,dimShape,stddev,params):
 	makeImageSummary("image",ImWarp,params)
 	for l in range(STlayerN):
@@ -35,7 +35,7 @@ def ST_depth4_CCFF(ImWarp,p,STlayerN,dimShape,stddev,params):
 			p = warp.compose(p,STfc4,params)
 	return ImWarp,p
 
-# build Spatial Transformer
+# build Spatial Transformer (depth=2)
 def ST_depth2_CF(ImWarp,p,STlayerN,dimShape,stddev,params):
 	makeImageSummary("image",ImWarp,params)
 	for l in range(STlayerN):
@@ -56,7 +56,7 @@ def ST_depth2_CF(ImWarp,p,STlayerN,dimShape,stddev,params):
 			p = warp.compose(p,STfc2,params)
 	return ImWarp,p
 
-# build Spatial Transformer
+# build Spatial Transformer (depth=1)
 def ST_depth1_F(ImWarp,p,STlayerN,dimShape,stddev,params):
 	makeImageSummary("image",ImWarp,params)
 	for l in range(STlayerN):
@@ -71,7 +71,7 @@ def ST_depth1_F(ImWarp,p,STlayerN,dimShape,stddev,params):
 			p = warp.compose(p,STfc1,params)
 	return ImWarp,p
 
-# build compositional Spatial Transformer
+# build compositional Spatial Transformer (depth=4)
 def cST_depth4_CCFF(imageInput,p,STlayerN,dimShape,stddev,params):
 	for l in range(STlayerN):
 		with tf.name_scope("cST{0}".format(l)):
@@ -103,7 +103,7 @@ def cST_depth4_CCFF(imageInput,p,STlayerN,dimShape,stddev,params):
 	makeImageSummary("imageST{0}".format(STlayerN),ImWarp,params)
 	return ImWarp,p
 
-# build compositional Spatial Transformer
+# build compositional Spatial Transformer (depth=2)
 def cST_depth2_CF(imageInput,p,STlayerN,dimShape,stddev,params):
 	for l in range(STlayerN):
 		with tf.name_scope("cST{0}".format(l)):
@@ -126,7 +126,7 @@ def cST_depth2_CF(imageInput,p,STlayerN,dimShape,stddev,params):
 	makeImageSummary("imageST{0}".format(STlayerN),ImWarp,params)
 	return ImWarp,p
 
-# build compositional Spatial Transformer
+# build compositional Spatial Transformer (depth=1)
 def cST_depth1_F(imageInput,p,STlayerN,dimShape,stddev,params):
 	for l in range(STlayerN):
 		with tf.name_scope("cST{0}".format(l)):
@@ -143,7 +143,7 @@ def cST_depth1_F(imageInput,p,STlayerN,dimShape,stddev,params):
 	makeImageSummary("imageST{0}".format(STlayerN),ImWarp,params)
 	return ImWarp,p
 
-# build compositional Spatial Transformer (recurrent)
+# build compositional Spatial Transformer (recurrent, depth=4)
 def cSTrecur_depth4_CCFF(imageInput,p,STlayerN,dimShape,stddev,params):
 	[STconv1dim,STconv2dim,STfc3dim] = dimShape
 	STconv2fcDim = (params.H-12)//2*(params.W-12)//2*STconv2dim
@@ -180,7 +180,7 @@ def cSTrecur_depth4_CCFF(imageInput,p,STlayerN,dimShape,stddev,params):
 	makeImageSummary("imageST{0}".format(STlayerN),ImWarp,params)
 	return ImWarp,p
 
-# build compositional Spatial Transformer (recurrent)
+# build compositional Spatial Transformer (recurrent, depth=2)
 def cSTrecur_depth2_CF(imageInput,p,STlayerN,dimShape,stddev,params):
 	[STconv1dim] = dimShape
 	STconv1fcDim = (params.H-8)*(params.W-8)*STconv1dim
@@ -206,7 +206,7 @@ def cSTrecur_depth2_CF(imageInput,p,STlayerN,dimShape,stddev,params):
 	makeImageSummary("imageST{0}".format(STlayerN),ImWarp,params)
 	return ImWarp,p
 
-# build compositional Spatial Transformer (recurrent)
+# build compositional Spatial Transformer (recurrent, depth=1)
 def cSTrecur_depth1_F(imageInput,p,STlayerN,dimShape,stddev,params):
 	with tf.name_scope("cSTrecur"):
 		with tf.variable_scope("fc1"):

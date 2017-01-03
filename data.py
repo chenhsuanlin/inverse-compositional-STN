@@ -37,6 +37,7 @@ def genPerturbations(params):
 			+tf.random_normal([params.batchSize,1])*params.warpScale["trans"]
 		O = np.zeros([params.batchSize,4],dtype=np.float32)
 		I = np.ones([params.batchSize,4],dtype=np.float32)
+		# fit warp parameters to generated displacements
 		if params.warpType=="affine":
 			J = np.concatenate([np.stack([X,Y,I,O,O,O],axis=-1),
 								np.stack([O,O,O,X,Y,I],axis=-1)],axis=1)

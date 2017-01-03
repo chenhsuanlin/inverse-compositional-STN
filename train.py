@@ -31,6 +31,7 @@ trainData,validData,testData = data.loadMNIST("data/MNIST.npz")
 print("setting configurations...")
 params = Params(args)
 
+# create directories for model output
 suffix = args.group
 if not os.path.exists("models_{0}".format(suffix)): os.mkdir("models_{0}".format(suffix))
 if not os.path.exists("models_{0}/interm".format(suffix)): os.mkdir("models_{0}/interm".format(suffix))
@@ -50,6 +51,7 @@ tfConfig = tf.ConfigProto(allow_soft_placement=True)
 tfConfig.gpu_options.allow_growth = True
 # build graph
 with tf.device(params.GPUdevice):
+	# generate training data on the fly
 	imageRawBatch = tf.placeholder(tf.float32,shape=[None,28,28],name="image")
 	pInitBatch = data.genPerturbations(params)
 	pInitMtrxBatch = warp.vec2mtrxBatch(pInitBatch,params)
@@ -80,6 +82,7 @@ with tf.device(params.GPUdevice):
 print("starting backpropagation...")
 trainN = len(trainData["image"])
 timeStart = time.time()
+# define some more summaries
 tfSaver,tfSaverInterm,tfSaverFinal = tf.train.Saver(max_to_keep=10), \
 									 tf.train.Saver(max_to_keep=10), \
 									 tf.train.Saver()
@@ -97,7 +100,7 @@ with tf.Session(config=tfConfig) as sess:
 	tfSummaryWriter.add_graph(sess.graph)
 	# training loop
 	for i in range(resumeIterN,maxIterN):
-		currLearningRate = params.baseLRST,params.baseLR # can be modified to scheduled learning rates
+		currLearningRate = params.baseLRST,params.baseLR # this can be modified to be scheduled learning rates
 		randIdx = np.random.randint(trainN,size=[params.batchSize])
 		trainBatch = {
 			imageRawBatch: trainData["image"][randIdx],
