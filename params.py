@@ -4,11 +4,8 @@ import warp
 class Params:
 	def __init__(self,args):
 		self.warpScale = {"pert":0.25,"trans":0.25}
-		# self.warpType = "translation"
-		# self.warpType = "similarity"
-		# self.warpType = "affine"
-		self.warpType = "homography"
-		self.batchSize = 200
+		self.warpType = args.warpType
+		self.batchSize = args.batchSize
 		self.baseLR,self.baseLRST = args.lr,args.lrST
 		# --- below are automatically set ---
 		self.H,self.W = 28,28
