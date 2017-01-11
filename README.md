@@ -25,7 +25,7 @@ You would need to have SciPy and TensorFlow (r0.10+) installed. Please refer to 
 The code is compatible with both Python2.7 (`python`) and Python3 (`python3`).  
 The training code can be executed via the command
 ```
-python train.py <TYPE> [--group GROUP] [--model MODEL] [--recurN RECURN] [--lr LR] [--lrST LRST] [--maxIter MAXITER] [--resume RESUME] [--gpu GPU]
+python train.py <TYPE> [--group GROUP] [--model MODEL] [--recurN RECURN] [--lr LR] [--lrST LRST] [--batchSize BATCHSIZE] [--maxIter MAXITER] [--warpType WARPTYPE] [--resume RESUME] [--gpu GPU]
 ```
 `<TYPE>` should be one of the following:  
 1. `CNN` - standard convolutional neural network  
