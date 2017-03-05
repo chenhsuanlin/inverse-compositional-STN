@@ -1,5 +1,6 @@
 ## Inverse Compositional Spatial Transformer Networks
 Chen-Hsuan Lin and Simon Lucey  
+IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017  
 
 arXiv preprint: https://arxiv.org/abs/1612.03897
 
