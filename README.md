@@ -2,6 +2,7 @@
 Chen-Hsuan Lin and Simon Lucey  
 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017  
 
+Paper: https://www.andrew.cmu.edu/user/chenhsul/paper/CVPR2017.pdf  
 arXiv preprint: https://arxiv.org/abs/1612.03897
 
 <p align="center"><img src="https://www.andrew.cmu.edu/user/chenhsul/images/ICSTN2.png" width=600 height=250></p>
@@ -9,18 +10,19 @@ arXiv preprint: https://arxiv.org/abs/1612.03897
 We provide the Python/TensorFlow code for the perturbed MNIST classification experiments.  
 If you find our code useful for your research, please cite
 ```
-@article{lin2016inverse,
+@article{lin2017icstn,
   title={Inverse Compositional Spatial Transformer Networks},
   author={Lin, Chen-Hsuan and Lucey, Simon},
-  journal={arXiv preprint arXiv:1612.03897},
-  year={2016}
+  booktitle={IEEE Conference on Computer Vision and Pattern Recognition ({CVPR})},
+  year={2017}
 }
 ```
 
 --------------------------------------
 
 ### Prerequisites  
-You would need to have SciPy and TensorFlow (r0.10+) installed. Please refer to the TensorFlow documentation (https://www.tensorflow.org/) for instructions on installation/configuration.
+You would need to have SciPy and TensorFlow (r0.10+) installed. Please refer to the TensorFlow documentation (https://www.tensorflow.org/) for instructions on installation/configuration.  
+**[NEW]** The main branch is now compatible with the TensorFlow r1.0 API. If you have an earlier version of TensorFlow, please switch to the `r0.10+` branch after cloning.  
 
 ### Running the code  
 The code is compatible with both Python2.7 (`python`) and Python3 (`python3`).  
