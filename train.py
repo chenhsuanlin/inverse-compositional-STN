@@ -93,8 +93,8 @@ tfSaver, tfSaverInterm, tfSaverFinal = tf.train.Saver(max_to_keep=10), \
 testErrorPH = tf.placeholder(tf.float32, shape=[])
 testErrorSummary = tf.summary.scalar("test error", testErrorPH)
 tfSummaryWriter = tf.summary.FileWriter("summary_{1}/{0}".format(saveFname, suffix))
-resumeIterN = 0
-maxIterN = 100000
+resumeIterN = args.resume
+maxIterN = args.maxIter
 with tf.Session(config=tfConfig) as sess:
     if resumeIterN == 0:
         sess.run(tf.global_variables_initializer())
