@@ -7,7 +7,7 @@ print("setting configurations...")
 opt = options.set()
 
 import tensorflow as tf
-import data,graph,graphST,warp
+import data,graph,warp,util
 
 print("=======================================================")
 print("train.py (training on MNIST)")
@@ -96,7 +96,7 @@ with tf.Session(config=tfConfig) as sess:
 		if (i+1)%20==0:
 			tfSummaryWriter.add_summary(summary,i+1)
 		if (i+1)%100==0:
-			print("it. {0}/{1} (lr={5:.2e},{4:.2e}),loss={2:.4f},time={3:.4f}"
+			print("it. {0}/{1} (lr={5:.2e},{4:.2e}), loss={2:.4f}, time={3:.4f}"
 				  .format(i+1,maxIterN,trainBatchLoss,time.time()-timeStart,currLearningRate[0],currLearningRate[1]))
 		if (i+1)%2000==0:
 			# update image summaries

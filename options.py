@@ -18,7 +18,7 @@ def set():
 									 choices=["translation","similarity","affine","homography"])
 	parser.add_argument("--resume",type=int,default=0,help="resume from iteration number")
 	parser.add_argument("--gpu",type=int,default=0,help="ID of GPU device (if there are multiple)")
-	opt = parser.parse_opt()
+	opt = parser.parse_args()
 
 	opt.warpScale = {"pert":0.25,"trans":0.25}
 	opt.baseLR,opt.baseLRST = opt.lr,opt.lrST

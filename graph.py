@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import time
-import data,warp
+import data,warp,util
 
 # build classification CNN for MNIST
 def fullCNN(opt,image,dimShape,stddev):
