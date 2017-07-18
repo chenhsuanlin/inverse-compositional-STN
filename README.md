@@ -1,6 +1,6 @@
 ## Inverse Compositional Spatial Transformer Networks
 Chen-Hsuan Lin and Simon Lucey  
-IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017  
+IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017 (**oral presentation**)  
 
 Paper: https://www.andrew.cmu.edu/user/chenhsul/paper/CVPR2017.pdf  
 arXiv preprint: https://arxiv.org/abs/1612.03897
@@ -10,7 +10,7 @@ arXiv preprint: https://arxiv.org/abs/1612.03897
 We provide the Python/TensorFlow code for the perturbed MNIST classification experiments.  
 If you find our code useful for your research, please cite
 ```
-@article{lin2017icstn,
+@article{lin2017inverse,
   title={Inverse Compositional Spatial Transformer Networks},
   author={Lin, Chen-Hsuan and Lucey, Simon},
   booktitle={IEEE Conference on Computer Vision and Pattern Recognition ({CVPR})},
