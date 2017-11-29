@@ -1,0 +1,122 @@
+import numpy as np
+import time,os,sys
+import argparse
+import util
+
+print(util.toYellow("======================================================="))
+print(util.toYellow("train.py (training on MNIST)"))
+print(util.toYellow("======================================================="))
+
+import tensorflow as tf
+import data,graph,warp,util
+import options
+
+print(util.toMagenta("setting configurations..."))
+opt = options.set(training=True)
+
+# create directories for model output
+util.mkdir("models_{0}".format(opt.group))
+
+print(util.toMagenta("building graph..."))
+tf.reset_default_graph()
+# build graph
+with tf.device("/gpu:0"):
+	# ------ define input data ------
+	image = tf.placeholder(tf.float32,shape=[opt.batchSize,opt.H,opt.W])
+	label = tf.placeholder(tf.float32,shape=[opt.batchSize,opt.labelN])
+	PH = [image,label]
+	# ------ generate perturbation ------
+	pInit = data.genPerturbations(opt)
+	pInitMtrx = warp.vec2mtrx(opt,pInit)
+	# ------ build network ------
+	image = tf.expand_dims(image,axis=-1)
+	imagePert = warp.transformImage(opt,image,pInitMtrx)
+	if opt.netType=="CNN":
+		output = graph.fullCNN(opt,imagePert)
+	elif opt.netType=="STN":
+		imageWarpAll = graph.STN(opt,imagePert)
+		imageWarp = imageWarpAll[-1]
+		output = graph.CNN(opt,imageWarp)
+	elif opt.netType=="IC-STN":
+		imageWarpAll = graph.ICSTN(opt,image,pInit)
+		imageWarp = imageWarpAll[-1]
+		output = graph.CNN(opt,imageWarp)
+	softmax = tf.nn.softmax(output)
+	prediction = tf.equal(tf.argmax(softmax,1),tf.argmax(label,1))
+	# ------ define loss ------
+	softmaxLoss = tf.nn.softmax_cross_entropy_with_logits(logits=output,labels=label)
+	loss = tf.reduce_mean(softmaxLoss)
+	# ------ optimizer ------
+	lrGP_PH,lrC_PH = tf.placeholder(tf.float32,shape=[]),tf.placeholder(tf.float32,shape=[])
+	optim = util.setOptimizer(opt,loss,lrGP_PH,lrC_PH)
+	# ------ generate summaries ------
+	summaryImageTrain = []
+	summaryImageTest = []
+	if opt.netType=="STN" or opt.netType=="IC-STN":
+		for l in range(opt.warpN+1):
+			summaryImageTrain.append(util.imageSummary(opt,imageWarpAll[l],"TRAIN_warp{0}".format(l),opt.H,opt.W))
+			summaryImageTest.append(util.imageSummary(opt,imageWarpAll[l],"TEST_warp{0}".format(l),opt.H,opt.W))
+		summaryImageTrain = tf.summary.merge(summaryImageTrain)
+		summaryImageTest = tf.summary.merge(summaryImageTest)
+	summaryLossTrain = tf.summary.scalar("TRAIN_loss",loss)
+	testErrorPH = tf.placeholder(tf.float32,shape=[])
+	summaryErrorTest = tf.summary.scalar("TEST_error",testErrorPH)
+
+# load data
+print(util.toMagenta("loading MNIST dataset..."))
+trainData,validData,testData = data.loadMNIST("data/MNIST.npz")
+
+# prepare model saver/summary writer
+saver = tf.train.Saver(max_to_keep=20)
+summaryWriter = tf.summary.FileWriter("summary_{0}/{1}".format(opt.group,opt.model))
+
+print(util.toYellow("======= TRAINING START ======="))
+timeStart = time.time()
+# start session
+tfConfig = tf.ConfigProto(allow_soft_placement=True)
+tfConfig.gpu_options.allow_growth = True
+with tf.Session(config=tfConfig) as sess:
+	sess.run(tf.global_variables_initializer())
+	summaryWriter.add_graph(sess.graph)
+	if opt.fromIt!=0:
+		util.restoreModel(opt,sess,saver,opt.fromIt)
+		print(util.toMagenta("resuming from iteration {0}...".format(opt.fromIt)))
+	print(util.toMagenta("start training..."))
+
+	# training loop
+	for i in range(opt.fromIt,opt.toIt):
+		lrGP = opt.lrGP*opt.lrGPdecay**(i//opt.lrGPstep)
+		lrC = opt.lrC*opt.lrCdecay**(i//opt.lrCstep)
+		# make training batch
+		batch = data.makeBatch(opt,trainData,PH)
+		batch[lrGP_PH] = lrGP
+		batch[lrC_PH] = lrC
+		# run one step
+		_,l = sess.run([optim,loss],feed_dict=batch)
+		if (i+1)%100==0:
+			print("it. {0}/{1}  lr={3}(GP),{4}(C), loss={5}, time={2}"
+				.format(util.toCyan("{0}".format(i+1)),
+						opt.toIt,
+						util.toGreen("{0:.2f}".format(time.time()-timeStart)),
+						util.toYellow("{0:.0e}".format(lrGP)),
+						util.toYellow("{0:.0e}".format(lrC)),
+						util.toRed("{0:.4f}".format(l))))
+		if (i+1)%100==0:
+			sl = sess.run(summaryLossTrain,feed_dict=batch)
+			summaryWriter.add_summary(sl,i+1)
+		if (i+1)%500==0 and (opt.netType=="STN" or opt.netType=="IC-STN"):
+			si = sess.run(summaryImageTrain,feed_dict=batch)
+			summaryWriter.add_summary(si,i+1)
+			si = sess.run(summaryImageTest,feed_dict=batch)
+			summaryWriter.add_summary(si,i+1)
+		if (i+1)%1000==0:
+			# evaluate on test set
+			testAccuracy = data.evaluate(opt,sess,testData,PH,prediction)
+			testError = (1-testAccuracy)*100
+			st = sess.run(summaryErrorTest,feed_dict={testErrorPH:testError})
+			summaryWriter.add_summary(st,i+1)
+		if (i+1)%10000==0:
+			util.saveModel(opt,sess,saver,i+1)
+			print(util.toGreen("model saved: {0}/{1}, it.{2}".format(opt.group,opt.model,i+1)))
+
+print(util.toYellow("======= TRAINING DONE ======="))
