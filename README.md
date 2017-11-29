@@ -21,41 +21,48 @@ If you find our code useful for your research, please cite
 --------------------------------------
 
 ### Prerequisites  
-You would need to have SciPy and TensorFlow (r0.10+) installed. Please refer to the TensorFlow documentation (https://www.tensorflow.org/) for instructions on installation/configuration.  
-**[NEW]** The main branch is now compatible with the TensorFlow r1.0 API. If you have an earlier version of TensorFlow, please switch to the `r0.10+` branch after cloning.  
+This code is developed with Python3. The following Python packages are required: 
+- TensorFlow (r1.0+)
+- NumPy
+- SciPy
+- TermColor  
+
+You can install them by running the command line
+```
+pip3 install --upgrade numpy scipy termcolor tensorflow-gpu
+```
+If you use Python2.7, use `pip2` instead; if you don't have sudo access, add the `--user` flag.  
 
 ### Running the code  
-The code is compatible with both Python2.7 (`python`) and Python3 (`python3`).  
+The code is compatible with both Python3 (`python3`) and Python2.7 (`python`).  
 The training code can be executed via the command
 ```
-python train.py <TYPE> [--group GROUP] [--model MODEL] [--recurN RECURN] [--lr LR] [--lrST LRST] [--batchSize BATCHSIZE] [--maxIter MAXITER] [--warpType WARPTYPE] [--resume RESUME] [--gpu GPU]
+python3 train.py <netType> [(options)]
 ```
-`<TYPE>` should be one of the following:  
+`<netType>` should be one of the following:  
 1. `CNN` - standard convolutional neural network  
 2. `STN` - Spatial Transformer Network (STN)  
-3. `cSTN` - compositional Spatial Transformer Network (c-STN)  
-4. `ICSTN` - Inverse Compositional Spatial Transformer Network (IC-STN)  
+3. `IC-STN` - Inverse Compositional Spatial Transformer Network (IC-STN)  
 
-The list of optional arguments can be found by executing `python train.py --help`.  
-If no optional arguments are given, the default settings are set to be the same as described in the paper.  
+The list of optional arguments can be found by executing `python3 train.py --help`.  
+The default settings in this code is slightly different from that in the paper; it is faster and more stable to optimize.  
 
 When the code is run for the first time, the MNIST dataset will be automatically downloaded and preprocessed.  
-The models (checkpoints) are saved in the automatically created directory `model_GROUP`; TensorFlow summaries are saved in `summary_GROUP`.
+The checkpoints are saved in the automatically created directory `model_GROUP`; summaries are saved in `summary_GROUP`.
 
 ### Visualizing the results  
 We've included code to visualize the training over TensorBoard. To execute, run
 ```
 tensorboard --logdir=summary_GROUP --port=6006
 ```
-Please refer to the TensorFlow documentation for detailed instructions.
 
 We provide three types of data visualization:  
-1. **EVENTS**: training/test error over iterations  
-2. **IMAGES**: alignment results over learned spatial transformations (on test samples)  
+1. **SCALARS**: training/test error over iterations  
+2. **IMAGES**: alignment results over learned spatial transformations  
 3. **GRAPH**: network architecture
 
 --------------------------------------
 
-Please contact me (chenhsul@andrew.cmu.edu) if you have any questions!
+Please contact me (chlin@cmu.edu) if you have any questions!
 
 
