@@ -21,7 +21,7 @@ If you find our code useful for your research, please cite
 --------------------------------------
 
 ### Prerequisites  
-This code is developed with Python3. The following Python packages are required: 
+This code is developed with Python3 (`python3`) but it is also compatible with Python2.7 (`python`). The following Python packages are required: 
 - TensorFlow (r1.0+)
 - NumPy
 - SciPy
@@ -34,7 +34,6 @@ pip3 install --upgrade numpy scipy termcolor tensorflow-gpu
 If you use Python2.7, use `pip2` instead; if you don't have sudo access, add the `--user` flag.  
 
 ### Running the code  
-The code is compatible with both Python3 (`python3`) and Python2.7 (`python`).  
 The training code can be executed via the command
 ```
 python3 train.py <netType> [(options)]
@@ -58,7 +57,7 @@ tensorboard --logdir=summary_GROUP --port=6006
 
 We provide three types of data visualization:  
 1. **SCALARS**: training/test error over iterations  
-2. **IMAGES**: alignment results over learned spatial transformations  
+2. **IMAGES**: alignment results and mean/variance appearances  
 3. **GRAPH**: network architecture
 
 --------------------------------------
