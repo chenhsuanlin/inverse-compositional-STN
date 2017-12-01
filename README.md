@@ -57,7 +57,7 @@ tensorboard --logdir=summary_GROUP --port=6006
 
 We provide three types of data visualization:  
 1. **SCALARS**: training/test error over iterations  
-2. **IMAGES**: alignment results over learned spatial transformations  
+2. **IMAGES**: alignment results and mean/variance appearances  
 3. **GRAPH**: network architecture
 
 --------------------------------------
