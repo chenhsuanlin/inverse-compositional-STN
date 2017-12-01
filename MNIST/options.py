@@ -14,13 +14,13 @@ def set(training):
 	parser.add_argument("--warpType",				default="homography",	help="type of warp function on images",
 																			choices=["translation","similarity","affine","homography"])
 	parser.add_argument("--warpN",		type=int,	default=4,				help="number of recurrent transformations (for IC-STN)")
-	parser.add_argument("--stdC",		type=float,	default=None,			help="initialization stddev (classification network)")
-	parser.add_argument("--stdGP",		type=float,	default=None,			help="initialization stddev (geometric predictor)")
+	parser.add_argument("--stdC",		type=float,	default=0.1,			help="initialization stddev (classification network)")
+	parser.add_argument("--stdGP",		type=float,	default=0.1,			help="initialization stddev (geometric predictor)")
 	parser.add_argument("--pertScale",	type=float,	default=0.25,			help="initial perturbation scale")
 	parser.add_argument("--transScale",	type=float,	default=0.25,			help="initial translation scale")
 	if training: # training
 		parser.add_argument("--batchSize",	type=int,	default=100,	help="batch size for SGD")
-		parser.add_argument("--lrC",		type=float,	default=None,	help="learning rate (classification network)")
+		parser.add_argument("--lrC",		type=float,	default=1e-2,	help="learning rate (classification network)")
 		parser.add_argument("--lrCdecay",	type=float,	default=1.0,	help="learning rate decay (classification network)")
 		parser.add_argument("--lrCstep",	type=int,	default=100000,	help="learning rate decay step size (classification network)")
 		parser.add_argument("--lrGP",		type=float,	default=None,	help="learning rate (geometric predictor)")
@@ -32,9 +32,6 @@ def set(training):
 		parser.add_argument("--batchSize",	type=int,	default=1,		help="batch size for evaluation")
 	opt = parser.parse_args()
 
-	if opt.stdC is None: opt.stdC = 0.1
-	if opt.stdGP is None: opt.stdGP = 0.1
-	if opt.lrC is None: opt.lrC = 1e-2
 	if opt.lrGP is None: opt.lrGP = 0 if opt.netType=="CNN" else \
 									1e-2 if opt.netType=="STN" else \
 									1e-4 if opt.netType=="IC-STN" else None
