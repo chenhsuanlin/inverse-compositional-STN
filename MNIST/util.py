@@ -26,6 +26,17 @@ def imageSummary(opt,image,tag,H,W):
 	imagePermute = tf.reshape(imageOne,[H,blockSize,W,blockSize,-1])
 	imageTransp = tf.transpose(imagePermute,[1,0,3,2,4])
 	imageBlocks = tf.reshape(imageTransp,[1,H*blockSize,W*blockSize,-1])
+	imageBlocks = tf.cast(imageBlocks*255,tf.uint8)
+	summary = tf.summary.image(tag,imageBlocks)
+	return summary
+
+# make image summary from image batch (mean/variance)
+def imageSummaryMeanVar(opt,image,tag,H,W):
+	imageOne = tf.batch_to_space_nd(image,crops=[[0,0],[0,0]],block_shape=[1,10])
+	imagePermute = tf.reshape(imageOne,[H,1,W,10,-1])
+	imageTransp = tf.transpose(imagePermute,[1,0,3,2,4])
+	imageBlocks = tf.reshape(imageTransp,[1,H*1,W*10,-1])
+	imageBlocks = tf.cast(imageBlocks*255,tf.uint8)
 	summary = tf.summary.image(tag,imageBlocks)
 	return summary
 

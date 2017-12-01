@@ -15,9 +15,9 @@ def loadMNIST(fname):
 		trainData["image"] = mnist.train.images.reshape([-1,28,28]).astype(np.float32)
 		validData["image"] = mnist.validation.images.reshape([-1,28,28]).astype(np.float32)
 		testData["image"] = mnist.test.images.reshape([-1,28,28]).astype(np.float32)
-		trainData["label"] = mnist.train.labels.astype(np.float32)
-		validData["label"] = mnist.validation.labels.astype(np.float32)
-		testData["label"] = mnist.test.labels.astype(np.float32)
+		trainData["label"] = np.argmax(mnist.train.labels.astype(np.float32),axis=1)
+		validData["label"] = np.argmax(mnist.validation.labels.astype(np.float32),axis=1)
+		testData["label"] = np.argmax(mnist.test.labels.astype(np.float32),axis=1)
 		os.makedirs(os.path.dirname(fname))
 		np.savez(fname,train=trainData,valid=validData,test=testData)
 		os.system("rm -rf MNIST_data")
@@ -71,15 +71,16 @@ def makeBatch(opt,data,PH):
 	}
 	return batch
 
-# evaluation on validation/test sets
-def evaluate(opt,sess,data,PH,prediction):
+# evaluation on test set
+def evalTest(opt,sess,data,PH,prediction,imagesEval=[]):
 	N = len(data["image"])
 	# put data in placeholders
 	[image,label] = PH
 	batchN = int(np.ceil(N/opt.batchSize))
+	warped = [{},{}]
 	count = 0
 	for b in range(batchN):
-		# use some dummy data (0) as batch filler if necesaary
+		# use some dummy data (0) as batch filler if necessary
 		if b!=batchN-1:
 			realIdx = np.arange(opt.batchSize*b,opt.batchSize*(b+1))
 		else:
@@ -90,7 +91,21 @@ def evaluate(opt,sess,data,PH,prediction):
 			image: data["image"][idx],
 			label: data["label"][idx],
 		}
-		pred = sess.run(prediction,feed_dict=batch)
+		evalList = sess.run([prediction]+imagesEval,feed_dict=batch)
+		pred = evalList[0]
 		count += pred[:len(realIdx)].sum()
+		if len(imagesEval)>0:
+			imgs = evalList[1:]
+			for i in range(len(realIdx)):
+				if data["label"][idx[i]] not in warped[0]: warped[0][data["label"][idx[i]]] = []
+				if data["label"][idx[i]] not in warped[1]: warped[1][data["label"][idx[i]]] = []
+				warped[0][data["label"][idx[i]]].append(imgs[0][i])
+				warped[1][data["label"][idx[i]]].append(imgs[1][i])
 	accuracy = float(count)/N
-	return accuracy
+	if len(imagesEval)>0:
+		mean = [np.array([np.mean(warped[0][l],axis=0) for l in warped[0]]),
+				np.array([np.mean(warped[1][l],axis=0) for l in warped[1]])]
+		var = [np.array([np.var(warped[0][l],axis=0) for l in warped[0]]),
+			   np.array([np.var(warped[1][l],axis=0) for l in warped[1]])]
+	else: mean,var = None,None
+	return accuracy,mean,var
