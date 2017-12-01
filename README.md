@@ -7,7 +7,6 @@ arXiv preprint: https://arxiv.org/abs/1612.03897
 
 <p align="center"><img src="https://www.andrew.cmu.edu/user/chenhsul/images/ICSTN2.png" width=600 height=250></p>
 
-We provide the Python/TensorFlow code for the perturbed MNIST classification experiments.  
 If you find our code useful for your research, please cite
 ```
 @article{lin2017inverse,
@@ -20,16 +19,14 @@ If you find our code useful for your research, please cite
 
 --------------------------------------
 
-### Prerequisites  
-This code is developed with Python3 (`python3`) but it is also compatible with Python2.7 (`python`). The following Python packages are required: 
-- TensorFlow (r1.0+)
-- NumPy
-- SciPy
-- TermColor  
+We provide TensorFlow code for the following experiments:
+- MNIST classification
+- traffic sign classification
 
-You can install them by running the command line
+### Prerequisites  
+This code is developed with Python3 (`python3`) but it is also compatible with Python2.7 (`python`). You can install the depending packages by running
 ```
-pip3 install --upgrade numpy scipy termcolor tensorflow-gpu
+pip3 install --upgrade numpy scipy termcolor matplotlib tensorflow-gpu
 ```
 If you use Python2.7, use `pip2` instead; if you don't have sudo access, add the `--user` flag.  
 
@@ -44,9 +41,9 @@ python3 train.py <netType> [(options)]
 3. `IC-STN` - Inverse Compositional Spatial Transformer Network (IC-STN)  
 
 The list of optional arguments can be found by executing `python3 train.py --help`.  
-The default settings in this code is slightly different from that in the paper; it is faster and more stable to optimize.  
+The default training settings in this released code is slightly different from that in the paper; it is stabler and optimizes the networks better.  
 
-When the code is run for the first time, the MNIST dataset will be automatically downloaded and preprocessed.  
+When the code is run for the first time, the datasets will be automatically downloaded and preprocessed.  
 The checkpoints are saved in the automatically created directory `model_GROUP`; summaries are saved in `summary_GROUP`.
 
 ### Visualizing the results  
