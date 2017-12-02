@@ -65,12 +65,12 @@ def STN(opt,image):
 		weight,bias = createVariable(opt,[7,7,int(feat.shape[-1]),outDim],stddev=opt.stdGP)
 		conv = tf.nn.conv2d(feat,weight,strides=[1,1,1,1],padding="VALID")+bias
 		return conv
-	def linearLayer(opt,feat,outDim,final=False):
-		weight,bias = createVariable(opt,[int(feat.shape[-1]),outDim],stddev=0.0 if final else opt.stdGP)
+	def linearLayer(opt,feat,outDim):
+		weight,bias = createVariable(opt,[int(feat.shape[-1]),outDim],stddev=opt.stdGP)
 		fc = tf.matmul(feat,weight)+bias
 		return fc
+	imageWarpAll = [image]
 	with tf.variable_scope("geometric"):
-		imageWarpAll = [image]
 		feat = image
 		with tf.variable_scope("conv1"):
 			feat = conv2Layer(opt,feat,6)
@@ -80,7 +80,7 @@ def STN(opt,image):
 			feat = tf.nn.relu(feat)
 		feat = tf.reshape(feat,[opt.batchSize,-1])
 		with tf.variable_scope("fc3"):
-			feat = linearLayer(opt,feat,opt.warpDim,final=False)
+			feat = linearLayer(opt,feat,opt.warpDim)
 		p = feat
 		pMtrx = warp.vec2mtrx(opt,p)
 		imageWarp = warp.transformImage(opt,image,pMtrx)
@@ -93,26 +93,26 @@ def ICSTN(opt,imageFull,p):
 		weight,bias = createVariable(opt,[7,7,int(feat.shape[-1]),outDim],stddev=opt.stdGP)
 		conv = tf.nn.conv2d(feat,weight,strides=[1,1,1,1],padding="VALID")+bias
 		return conv
-	def linearLayer(opt,feat,outDim,final=False):
-		weight,bias = createVariable(opt,[int(feat.shape[-1]),outDim],stddev=0.0 if final else opt.stdGP)
+	def linearLayer(opt,feat,outDim):
+		weight,bias = createVariable(opt,[int(feat.shape[-1]),outDim],stddev=opt.stdGP)
 		fc = tf.matmul(feat,weight)+bias
 		return fc
-	with tf.variable_scope("geometric"):
-		imageWarpAll = []
-		for l in range(opt.warpN):
+	imageWarpAll = []
+	for l in range(opt.warpN):
+		with tf.variable_scope("geometric{0}".format(l),reuse=l>0):
 			pMtrx = warp.vec2mtrx(opt,p)
 			imageWarp = warp.transformCropImage(opt,imageFull,pMtrx)
 			imageWarpAll.append(imageWarp)
 			feat = imageWarp
-			with tf.variable_scope("conv1",reuse=l>0):
+			with tf.variable_scope("conv1"):
 				feat = conv2Layer(opt,feat,6)
 				feat = tf.nn.relu(feat)
-			with tf.variable_scope("conv2",reuse=l>0):
+			with tf.variable_scope("conv2"):
 				feat = conv2Layer(opt,feat,24)
 				feat = tf.nn.relu(feat)
 			feat = tf.reshape(feat,[opt.batchSize,-1])
-			with tf.variable_scope("fc3",reuse=l>0):
-				feat = linearLayer(opt,feat,opt.warpDim,final=False)
+			with tf.variable_scope("fc3"):
+				feat = linearLayer(opt,feat,opt.warpDim)
 			dp = feat
 			p = warp.compose(opt,p,dp)
 		pMtrx = warp.vec2mtrx(opt,p)

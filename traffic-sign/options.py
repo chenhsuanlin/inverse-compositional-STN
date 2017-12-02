@@ -49,7 +49,6 @@ def set(training):
 	opt.labelN = 43
 	opt.canon4pts = np.array([[-1,-1],[-1,1],[1,1],[1,-1]],dtype=np.float32)
 	opt.image4pts = np.array([[0,0],[0,opt.H-1],[opt.W-1,opt.H-1],[opt.W-1,0]],dtype=np.float32)
-	opt.imageFull4pts = np.array([[0,0],[0,opt.fullH-1],[opt.fullW-1,opt.fullH-1],[opt.fullW-1,0]],dtype=np.float32)
 	opt.bbox = [int(opt.fullW/2-opt.W/2),int(opt.fullH/2-opt.H/2),int(opt.fullW/2+opt.W/2),int(opt.fullH/2+opt.H/2)]
 	opt.bbox4pts = np.array([[opt.bbox[0],opt.bbox[1]],[opt.bbox[0],opt.bbox[3]],
 							 [opt.bbox[2],opt.bbox[3]],[opt.bbox[2],opt.bbox[1]]],dtype=np.float32)

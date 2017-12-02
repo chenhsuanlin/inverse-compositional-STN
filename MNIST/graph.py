@@ -68,8 +68,8 @@ def STN(opt,image):
 		weight,bias = createVariable(opt,[int(feat.shape[-1]),outDim],stddev=0.0 if final else opt.stdGP)
 		fc = tf.matmul(feat,weight)+bias
 		return fc
+	imageWarpAll = [image]
 	with tf.variable_scope("geometric"):
-		imageWarpAll = [image]
 		feat = image
 		with tf.variable_scope("conv1"):
 			feat = conv2Layer(opt,feat,4)
@@ -100,25 +100,25 @@ def ICSTN(opt,image,p):
 		weight,bias = createVariable(opt,[int(feat.shape[-1]),outDim],stddev=0.0 if final else opt.stdGP)
 		fc = tf.matmul(feat,weight)+bias
 		return fc
-	with tf.variable_scope("geometric"):
-		imageWarpAll = []
-		for l in range(opt.warpN):
+	imageWarpAll = []
+	for l in range(opt.warpN):
+		with tf.variable_scope("geometric{0}".format(l),reuse=l>0):
 			pMtrx = warp.vec2mtrx(opt,p)
 			imageWarp = warp.transformImage(opt,image,pMtrx)
 			imageWarpAll.append(imageWarp)
 			feat = imageWarp
-			with tf.variable_scope("conv1",reuse=l>0):
+			with tf.variable_scope("conv1"):
 				feat = conv2Layer(opt,feat,4)
 				feat = tf.nn.relu(feat)
-			with tf.variable_scope("conv2",reuse=l>0):
+			with tf.variable_scope("conv2"):
 				feat = conv2Layer(opt,feat,8)
 				feat = tf.nn.relu(feat)
 				feat = tf.nn.max_pool(feat,ksize=[1,2,2,1],strides=[1,2,2,1],padding="VALID")
 			feat = tf.reshape(feat,[opt.batchSize,-1])
-			with tf.variable_scope("fc3",reuse=l>0):
+			with tf.variable_scope("fc3"):
 				feat = linearLayer(opt,feat,48)
 				feat = tf.nn.relu(feat)
-			with tf.variable_scope("fc4",reuse=l>0):
+			with tf.variable_scope("fc4"):
 				feat = linearLayer(opt,feat,opt.warpDim,final=True)
 			dp = feat
 			p = warp.compose(opt,p,dp)
