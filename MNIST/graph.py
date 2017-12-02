@@ -85,9 +85,9 @@ def STN(opt,image):
 		with tf.variable_scope("fc4"):
 			feat = linearLayer(opt,feat,opt.warpDim,final=True)
 		p = feat
-		pMtrx = warp.vec2mtrx(opt,p)
-		imageWarp = warp.transformImage(opt,image,pMtrx)
-		imageWarpAll.append(imageWarp)
+	pMtrx = warp.vec2mtrx(opt,p)
+	imageWarp = warp.transformImage(opt,image,pMtrx)
+	imageWarpAll.append(imageWarp)
 	return imageWarpAll
 
 # build Inverse Compositional STN
@@ -121,10 +121,10 @@ def ICSTN(opt,image,p):
 			with tf.variable_scope("fc4"):
 				feat = linearLayer(opt,feat,opt.warpDim,final=True)
 			dp = feat
-			p = warp.compose(opt,p,dp)
-		pMtrx = warp.vec2mtrx(opt,p)
-		imageWarp = warp.transformImage(opt,image,pMtrx)
-		imageWarpAll.append(imageWarp)
+		p = warp.compose(opt,p,dp)
+	pMtrx = warp.vec2mtrx(opt,p)
+	imageWarp = warp.transformImage(opt,image,pMtrx)
+	imageWarpAll.append(imageWarp)
 	return imageWarpAll
 
 # auxiliary function for creating weight and bias
