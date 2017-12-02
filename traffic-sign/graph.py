@@ -99,7 +99,7 @@ def ICSTN(opt,imageFull,p):
 		return fc
 	imageWarpAll = []
 	for l in range(opt.warpN):
-		with tf.variable_scope("geometric{0}".format(l),reuse=l>0):
+		with tf.variable_scope("geometric",reuse=l>0):
 			pMtrx = warp.vec2mtrx(opt,p)
 			imageWarp = warp.transformCropImage(opt,imageFull,pMtrx)
 			imageWarpAll.append(imageWarp)
