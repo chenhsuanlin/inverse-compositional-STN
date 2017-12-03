@@ -55,7 +55,7 @@ def genPerturbations(opt):
 			if opt.warpType=="affine":
 				J = np.concatenate([np.stack([X,Y,I,O,O,O],axis=-1),
 									np.stack([O,O,O,X,Y,I],axis=-1)],axis=1)
-			dXY = tf.expand_dims(tf.concat(1,[dX,dY]),-1)
+			dXY = tf.expand_dims(tf.concat([dX,dY],1),-1)
 			pPert = tf.matrix_solve_ls(J,dXY)[:,:,0]
 	return pPert
 
