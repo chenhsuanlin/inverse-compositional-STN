@@ -23,6 +23,8 @@ We provide TensorFlow code for the following experiments:
 - MNIST classification
 - traffic sign classification
 
+**(I'm currently working on a PyTorch version of IC-STN. It will be up shortly. Stay tuned!)**
+
 ### Prerequisites  
 This code is developed with Python3 (`python3`) but it is also compatible with Python2.7 (`python`). TensorFlow r1.0+ is required. You can install the depending packages by running
 ```
