@@ -94,15 +94,16 @@ def evalTest(opt,sess,data,PH,prediction,imagesEval=[]):
 		evalList = sess.run([prediction]+imagesEval,feed_dict=batch)
 		pred = evalList[0]
 		count += pred[:len(realIdx)].sum()
-		if len(imagesEval)>0:
+		if opt.netType=="STN" or opt.netType=="IC-STN":
 			imgs = evalList[1:]
 			for i in range(len(realIdx)):
-				if data["label"][idx[i]] not in warped[0]: warped[0][data["label"][idx[i]]] = []
-				if data["label"][idx[i]] not in warped[1]: warped[1][data["label"][idx[i]]] = []
-				warped[0][data["label"][idx[i]]].append(imgs[0][i])
-				warped[1][data["label"][idx[i]]].append(imgs[1][i])
+				l = data["label"][idx[i]]
+				if l not in warped[0]: warped[0][l] = []
+				if l not in warped[1]: warped[1][l] = []
+				warped[0][l].append(imgs[0][i])
+				warped[1][l].append(imgs[1][i])
 	accuracy = float(count)/N
-	if len(imagesEval)>0:
+	if opt.netType=="STN" or opt.netType=="IC-STN":
 		mean = [np.array([np.mean(warped[0][l],axis=0) for l in warped[0]]),
 				np.array([np.mean(warped[1][l],axis=0) for l in warped[1]])]
 		var = [np.array([np.var(warped[0][l],axis=0) for l in warped[0]]),
