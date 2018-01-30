@@ -94,7 +94,7 @@ We provide three types of data visualization on Visdom:
 
 If you find our code useful for your research, please cite
 ```
-@article{lin2017inverse,
+@inproceedings{lin2017inverse,
   title={Inverse Compositional Spatial Transformer Networks},
   author={Lin, Chen-Hsuan and Lucey, Simon},
   booktitle={IEEE Conference on Computer Vision and Pattern Recognition ({CVPR})},
