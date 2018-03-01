@@ -2,7 +2,9 @@
 Chen-Hsuan Lin and Simon Lucey  
 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017 (**oral presentation**)  
 
-Paper: https://www.andrew.cmu.edu/user/chenhsul/paper/CVPR2017.pdf  
+Website: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN  
+Paper: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN/paper.pdf  
+Poster: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN/poster.pdf   
 arXiv preprint: https://arxiv.org/abs/1612.03897
 
 <p align="center"><img src="https://www.andrew.cmu.edu/user/chenhsul/images/ICSTN2.png" width=600 height=250></p>
