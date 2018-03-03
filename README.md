@@ -2,7 +2,9 @@
 Chen-Hsuan Lin and Simon Lucey  
 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017 (**oral presentation**)  
 
-Paper: https://www.andrew.cmu.edu/user/chenhsul/paper/CVPR2017.pdf  
+Website: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN  
+Paper: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN/paper.pdf  
+Poster: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN/poster.pdf   
 arXiv preprint: https://arxiv.org/abs/1612.03897
 
 <p align="center"><img src="https://www.andrew.cmu.edu/user/chenhsul/images/ICSTN2.png" width=600 height=250></p>
@@ -94,7 +96,7 @@ We provide three types of data visualization on Visdom:
 
 If you find our code useful for your research, please cite
 ```
-@article{lin2017inverse,
+@inproceedings{lin2017inverse,
   title={Inverse Compositional Spatial Transformer Networks},
   author={Lin, Chen-Hsuan and Lucey, Simon},
   booktitle={IEEE Conference on Computer Vision and Pattern Recognition ({CVPR})},
