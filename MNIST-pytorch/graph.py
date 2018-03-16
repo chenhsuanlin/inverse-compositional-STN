@@ -153,5 +153,9 @@ def initialize(opt,model,stddev,last0=False):
 			m.bias.data.normal_(0,stddev)
 	for m in model.linearLayers:
 		if isinstance(m,torch.nn.Linear):
-			m.weight.data.normal_(0,0.0 if last0 and m is model.linearLayers[-1] else stddev)
-			m.bias.data.normal_(0,0.0 if last0 and m is model.linearLayers[-1] else stddev)
+			if last0 and m is model.linearLayers[-1]:
+				m.weight.data.zero_()
+				m.bias.data.zero_()
+			else:
+				m.weight.data.normal_(0,stddev)
+				m.bias.data.normal_(0,stddev)
