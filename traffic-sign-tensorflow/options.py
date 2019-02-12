@@ -35,7 +35,7 @@ def set(training):
 
 	if opt.lrGP is None: opt.lrGP = 0 if opt.netType=="CNN" else \
 									1e-3 if opt.netType=="STN" else \
-									1e-4 if opt.netType=="IC-STN" else None
+									3e-5 if opt.netType=="IC-STN" else None
 
 	# --- below are automatically set ---
 	opt.training = training
