@@ -31,7 +31,7 @@ class FullCNN(torch.nn.Module):
 		initialize(opt,self,opt.stdC)
 	def forward(self,opt,image):
 		feat = image
-		feat = self.conv2Layers(feat).view(opt.batchSize,-1)
+		feat = self.conv2Layers(feat).reshape(opt.batchSize,-1)
 		feat = self.linearLayers(feat)
 		output = feat
 		return output
@@ -60,7 +60,7 @@ class CNN(torch.nn.Module):
 		initialize(opt,self,opt.stdC)
 	def forward(self,opt,image):
 		feat = image
-		feat = self.conv2Layers(feat).view(opt.batchSize,-1)
+		feat = self.conv2Layers(feat).reshape(opt.batchSize,-1)
 		feat = self.linearLayers(feat)
 		output = feat
 		return output
@@ -97,7 +97,7 @@ class STN(torch.nn.Module):
 	def forward(self,opt,image):
 		imageWarpAll = [image]
 		feat = image
-		feat = self.conv2Layers(feat).view(opt.batchSize,-1)
+		feat = self.conv2Layers(feat).reshape(opt.batchSize,-1)
 		feat = self.linearLayers(feat)
 		p = feat
 		pMtrx = warp.vec2mtrx(opt,p)
@@ -136,7 +136,7 @@ class ICSTN(torch.nn.Module):
 			imageWarp = warp.transformImage(opt,image,pMtrx)
 			imageWarpAll.append(imageWarp)
 			feat = imageWarp
-			feat = self.conv2Layers(feat).view(opt.batchSize,-1)
+			feat = self.conv2Layers(feat).reshape(opt.batchSize,-1)
 			feat = self.linearLayers(feat)
 			dp = feat
 			p = warp.compose(opt,p,dp)

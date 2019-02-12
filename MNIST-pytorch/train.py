@@ -38,7 +38,7 @@ with torch.cuda.device(0):
 
 # load data
 print(util.toMagenta("loading MNIST dataset..."))
-trainData,validData,testData = data.loadMNIST("data/MNIST.npz")
+trainData,testData = data.loadMNIST(opt,"data")
 
 # visdom visualizer
 vis = util.Visdom(opt)
@@ -82,7 +82,7 @@ with torch.cuda.device(0):
 						util.toGreen("{0:.2f}".format(time.time()-timeStart)),
 						util.toYellow("{0:.0e}".format(lrGP)),
 						util.toYellow("{0:.0e}".format(lrC)),
-						util.toRed("{0:.4f}".format(train_loss.data[0]))))
+						util.toRed("{0:.4f}".format(train_loss))))
 		if (i+1)%200==0: vis.trainLoss(opt,i+1,train_loss)
 		if (i+1)%1000==0:
 			# evaluate on test set

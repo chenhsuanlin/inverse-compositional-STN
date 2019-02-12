@@ -12,12 +12,6 @@ def imread(fname):
 def imsave(fname,array):
 	scipy.misc.toimage(array,cmin=0.0,cmax=1.0).save(fname)
 
-def toTorch(nparray):
-	tensor = torch.from_numpy(nparray).cuda()
-	return torch.autograd.Variable(tensor,requires_grad=False)
-def toNumpy(cudavar):
-	return cudavar.data.cpu().numpy()
-
 # convert to colored strings
 def toRed(content): return termcolor.colored(content,"red",attrs=["bold"])
 def toGreen(content): return termcolor.colored(content,"green",attrs=["bold"])
@@ -37,7 +31,7 @@ def saveModel(opt,geometric,classifier,it):
 
 class Visdom():
 	def __init__(self,opt):
-		self.vis = visdom.Visdom(port=opt.port)
+		self.vis = visdom.Visdom(port=opt.port,use_incoming_socket=False)
 		self.trainLossInit = True
 		self.testLossInit = True
 		self.meanVarInit = True
@@ -48,7 +42,7 @@ class Visdom():
 		imageBlocks = np.concatenate([np.concatenate(row,axis=2) for row in images],axis=1)
 		return imageBlocks
 	def trainLoss(self,opt,it,loss):
-		loss = float(toNumpy(loss))
+		loss = float(loss.detach().cpu().numpy())
 		if self.trainLossInit:
 			self.vis.line(Y=np.array([loss]),X=np.array([it]),win="{0}_trainloss".format(opt.model),
 						  opts={ "title": "{0} (TRAIN_loss)".format(opt.model) })

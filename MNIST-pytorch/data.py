@@ -2,30 +2,21 @@ import numpy as np
 import scipy.linalg
 import os,time
 import torch
+import torchvision
 
 import warp,util
 
 # load MNIST data
-def loadMNIST(fname):
-	if not os.path.exists(fname):
-		# download and preprocess MNIST dataset
-		from tensorflow.examples.tutorials.mnist import input_data
-		mnist = input_data.read_data_sets("MNIST_data/",one_hot=True)
-		trainData,validData,testData = {},{},{}
-		trainData["image"] = mnist.train.images.reshape([-1,28,28]).astype(np.float32)
-		validData["image"] = mnist.validation.images.reshape([-1,28,28]).astype(np.float32)
-		testData["image"] = mnist.test.images.reshape([-1,28,28]).astype(np.float32)
-		trainData["label"] = np.argmax(mnist.train.labels.astype(np.float32),axis=1)
-		validData["label"] = np.argmax(mnist.validation.labels.astype(np.float32),axis=1)
-		testData["label"] = np.argmax(mnist.test.labels.astype(np.float32),axis=1)
-		os.makedirs(os.path.dirname(fname))
-		np.savez(fname,train=trainData,valid=validData,test=testData)
-		os.system("rm -rf MNIST_data")
-	MNIST = np.load(fname)
-	trainData = MNIST["train"].item()
-	validData = MNIST["valid"].item()
-	testData = MNIST["test"].item()
-	return trainData,validData,testData
+def loadMNIST(opt,path):
+	os.makedirs(path,exist_ok=True)
+	trainDataset = torchvision.datasets.MNIST(path,train=True,download=True)
+	testDataset = torchvision.datasets.MNIST(path,train=False,download=True)
+	trainData,testData = {},{}
+	trainData["image"] = torch.tensor([np.array(sample[0])/255.0 for sample in trainDataset],dtype=torch.float32)
+	testData["image"] = torch.tensor([np.array(sample[0])/255.0 for sample in testDataset],dtype=torch.float32)
+	trainData["label"] = torch.tensor([sample[1] for sample in trainDataset])
+	testData["label"] = torch.tensor([sample[1] for sample in testDataset])
+	return trainData,testData
 
 # generate training batch
 def genPerturbations(opt):
@@ -58,7 +49,7 @@ def genPerturbations(opt):
 		dXY = np.expand_dims(np.concatenate([dX,dY],axis=1),axis=-1)
 		Jtransp = np.transpose(J,axes=[0,2,1])
 		pPert = np.matmul(np.linalg.inv(np.matmul(Jtransp,J)),np.matmul(Jtransp,dXY)).squeeze()
-	pInit = util.toTorch(pPert)
+	pInit = torch.from_numpy(pPert).cuda()
 	return pInit
 
 # make training batch
@@ -66,8 +57,8 @@ def makeBatch(opt,data):
 	N = len(data["image"])
 	randIdx = np.random.randint(N,size=[opt.batchSize])
 	batch = {
-		"image": util.toTorch(data["image"][randIdx]),
-		"label": util.toTorch(data["label"][randIdx]),
+		"image": data["image"][randIdx].cuda(),
+		"label": data["label"][randIdx].cuda(),
 	}
 	return batch
 
@@ -88,8 +79,8 @@ def evalTest(opt,data,geometric,classifier):
 		idx = np.zeros([opt.batchSize],dtype=int)
 		idx[:len(realIdx)] = realIdx
 		# make training batch
-		image = util.toTorch(data["image"][idx])
-		label = util.toTorch(data["label"][idx])
+		image = data["image"][idx].cuda()
+		label = data["label"][idx].cuda()
 		image.data.unsqueeze_(dim=1)
 		# generate perturbation
 		pInit = genPerturbations(opt)
@@ -99,12 +90,12 @@ def evalTest(opt,data,geometric,classifier):
 		imageWarp = imageWarpAll[-1]
 		output = classifier(opt,imageWarp)
 		_,pred = output.max(dim=1)
-		count += int(util.toNumpy((pred==label).sum()))
+		count += int((pred==label).sum().cpu().numpy())
 		if opt.netType=="STN" or opt.netType=="IC-STN":
-			imgPert = util.toNumpy(imagePert)
-			imgWarp = util.toNumpy(imageWarp)
+			imgPert = imagePert.detach().cpu().numpy()
+			imgWarp = imageWarp.detach().cpu().numpy()
 			for i in range(len(realIdx)):
-				l = data["label"][idx[i]]
+				l = data["label"][idx[i]].item()
 				if l not in warped[0]: warped[0][l] = []
 				if l not in warped[1]: warped[1][l] = []
 				warped[0][l].append(imgPert[i])

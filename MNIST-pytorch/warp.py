@@ -12,7 +12,7 @@ def fit(Xsrc,Xdst):
 						np.stack([O,O,O,X,Y,I],axis=1)),axis=0)
 	b = np.concatenate((U,V),axis=0)
 	p1,p2,p3,p4,p5,p6 = scipy.linalg.lstsq(A,b)[0].squeeze()
-	pMtrx = np.array([[p1,p2,p3],[p4,p5,p6],[0,0,1]],dtype=np.float32)
+	pMtrx = np.array([[p1,p2,p3],[p4,p5,p6],[0,0,1]],dtype=torch.float32)
 	return pMtrx
 
 # compute composition of warp parameters
@@ -20,7 +20,7 @@ def compose(opt,p,dp):
 	pMtrx = vec2mtrx(opt,p)
 	dpMtrx = vec2mtrx(opt,dp)
 	pMtrxNew = dpMtrx.matmul(pMtrx)
-	pMtrxNew /= pMtrxNew[:,2:3,2:3]
+	pMtrxNew = pMtrxNew/pMtrxNew[:,2:3,2:3]
 	pNew = mtrx2vec(opt,pMtrxNew)
 	return pNew
 
@@ -33,8 +33,8 @@ def inverse(opt,p):
 
 # convert warp parameters to matrix
 def vec2mtrx(opt,p):
-	O = util.toTorch(np.zeros([opt.batchSize],dtype=np.float32))
-	I = util.toTorch(np.ones([opt.batchSize],dtype=np.float32))
+	O = torch.zeros(opt.batchSize,dtype=torch.float32).cuda()
+	I = torch.ones(opt.batchSize,dtype=torch.float32).cuda()
 	if opt.warpType=="translation":
 		tx,ty = torch.unbind(p,dim=1)
 		pMtrx = torch.stack([torch.stack([I,O,tx],dim=-1),
@@ -71,7 +71,7 @@ def mtrx2vec(opt,pMtrx):
 
 # warp the image
 def transformImage(opt,image,pMtrx):
-	refMtrx = util.toTorch(opt.refMtrx)
+	refMtrx = torch.from_numpy(opt.refMtrx).cuda()
 	refMtrx = refMtrx.repeat(opt.batchSize,1,1)
 	transMtrx = refMtrx.matmul(pMtrx)
 	# warp the canonical coordinates
@@ -79,11 +79,11 @@ def transformImage(opt,image,pMtrx):
 	X,Y = X.flatten(),Y.flatten()
 	XYhom = np.stack([X,Y,np.ones_like(X)],axis=1).T
 	XYhom = np.tile(XYhom,[opt.batchSize,1,1]).astype(np.float32)
-	XYhom = util.toTorch(XYhom)
+	XYhom = torch.from_numpy(XYhom).cuda()
 	XYwarpHom = transMtrx.matmul(XYhom)
 	XwarpHom,YwarpHom,ZwarpHom = torch.unbind(XYwarpHom,dim=1)
-	Xwarp = (XwarpHom/(ZwarpHom+1e-8)).view(opt.batchSize,opt.H,opt.W)
-	Ywarp = (YwarpHom/(ZwarpHom+1e-8)).view(opt.batchSize,opt.H,opt.W)
+	Xwarp = (XwarpHom/(ZwarpHom+1e-8)).reshape(opt.batchSize,opt.H,opt.W)
+	Ywarp = (YwarpHom/(ZwarpHom+1e-8)).reshape(opt.batchSize,opt.H,opt.W)
 	grid = torch.stack([Xwarp,Ywarp],dim=-1)
 	# sampling with bilinear interpolation
 	imageWarp = torch.nn.functional.grid_sample(image,grid,mode="bilinear")
