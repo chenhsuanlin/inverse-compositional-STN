@@ -3,7 +3,7 @@
 and [Simon Lucey](http://www.simonlucey.com/)  
 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2017 (**oral presentation**)  
 
-Website: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN  
+Project page: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN  
 Paper: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN/paper.pdf  
 Poster: https://chenhsuanlin.bitbucket.io/inverse-compositional-STN/poster.pdf   
 arXiv preprint: https://arxiv.org/abs/1612.03897
